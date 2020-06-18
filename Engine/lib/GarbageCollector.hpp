@@ -1,6 +1,8 @@
 #ifndef GARBAGECOLLECTOR_HPP_
 #define GARBAGECOLLECTOR_HPP_
 
+#include "TagObjects.hpp"
+
 class GarbageCollector {
  public:
   //

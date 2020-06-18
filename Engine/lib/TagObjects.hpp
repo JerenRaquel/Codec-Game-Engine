@@ -3,6 +3,20 @@
 
 #include <memory>
 
+struct GameObject {
+  unsigned int object_id;
+  std::unique_ptr<TagObjects> tag_object;
+};
+
+struct Tags {
+  std::string name;
+  bool flag_render = true;
+};
+
+struct TagComp {
+  bool operator()(Tags a, Tags b) { return a.name < b.name; }
+};
+
 class TagObjects {
  public:
   //
