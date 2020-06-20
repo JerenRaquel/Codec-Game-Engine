@@ -13,14 +13,14 @@ class GarbageCollector {
   //
   // Structors
   //
-  GarbageCollector();
-  ~GarbageCollector();
+  GarbageCollector(){};
+  ~GarbageCollector(){};
 
   //
   // Public Functions
   //
-  void Clean();
-  void AddGarbage(GameObject* object);
+  void Clean(){};
+  void AddGarbage(GameObject* object){};
 
  private:
   /*Member vars*/;

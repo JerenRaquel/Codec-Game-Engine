@@ -1,20 +1,14 @@
 #ifndef TAGOBJECTS_HPP_
 #define TAGOBJECTS_HPP_
 
+#include <SFML/Graphics.hpp>
 #include <memory>
+#include <string>
 
-struct GameObject {
-  unsigned int object_id;
-  std::unique_ptr<TagObjects> tag_object;
-};
-
-struct Tags {
-  std::string name;
-  bool flag_render = true;
-};
-
-struct TagComp {
-  bool operator()(Tags a, Tags b) { return a.name < b.name; }
+struct Transform {
+  sf::Vector2f position;
+  float rotation;
+  sf::Vector2f scale = sf::Vector2f(1, 1);
 };
 
 class TagObjects {
@@ -23,20 +17,36 @@ class TagObjects {
   // Structors
   //
   TagObjects();
-  TagObjects(sf::Sprite new_sprite, sf::IntRect uv);
-  ~TagObjects();
+  TagObjects(const std::string& file_location);
+  TagObjects(const std::string& file_location, const Transform& transform);
+  TagObjects(const std::string& file_location, const sf::IntRect uv);
+  TagObjects(const std::string& file_location, const Transform& transform,
+             const sf::IntRect uv);
+  ~TagObjects(){};
 
   //
   // Public Functions
   //
-  sf::Sprite* GetSprite();
-  sf::Texture* GetTexture();
-  void Remove();
-  void RemoveNow();
+  // * Getters
+  const sf::Sprite* GetSprite() const noexcept;
+  const sf::Texture* GetTexture() const noexcept;
+  const Transform* GetTransform() const noexcept;
+  // * Setters
+  void SetTransform(const Transform& transform) noexcept;
 
  private:
+  //
+  // Private Data Members
+  //
+  // * Data
   std::unique_ptr<sf::Sprite> sprite_;
   std::unique_ptr<sf::Texture> texture_;
+  std::unique_ptr<Transform> transform_;
+  // * Flags
+
+  //
+  // Private Functions
+  //
 };
 
 #endif  // TAGOBJECTS_HPP_

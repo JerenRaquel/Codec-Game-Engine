@@ -9,7 +9,4 @@ void Engine::Start() {}
 void Engine::Awake() {}
 void Engine::Update() {}
 
-int main(int argc, char **argv) {
-  Engine engine;
-  engine.Start();
-}
+int main(int argc, char **argv) { Engine engine; }
