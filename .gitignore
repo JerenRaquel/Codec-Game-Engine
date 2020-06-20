@@ -1,1 +1,9 @@
+# For VSCode users
 *.vscode/
+
+# Personal Testfiles
+*.o
+Game
+*.txt
+*.png
+*.jpg

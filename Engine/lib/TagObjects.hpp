@@ -2,6 +2,7 @@
 #define TAGOBJECTS_HPP_
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <memory>
 #include <string>
 
@@ -9,6 +10,9 @@ struct Transform {
   sf::Vector2f position;
   float rotation;
   sf::Vector2f scale = sf::Vector2f(1, 1);
+  friend std::istream& operator>>(std::istream& in, Transform& transform);
+  friend std::ostream& operator<<(std::ostream& out,
+                                  const Transform& transform);
 };
 
 class TagObjects {

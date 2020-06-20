@@ -10,10 +10,13 @@
 struct Tags {
   std::string name;
   bool flag_render = true;
+  friend std::istream& operator>>(std::istream& in, Tags& tag);
 };
 
 struct TagComp {
-  bool operator()(Tags a, Tags b) { return a.name < b.name; }
+  bool operator()(const Tags& a, const Tags& b) const {
+    return a.name < b.name;
+  }
 };
 
 class GameObject {
@@ -41,7 +44,6 @@ class GameObject {
   // Private Data Members
   //
   // * Data
-  unsigned int object_id_;
   std::unique_ptr<TagObjects> tag_object_;
   // * Flags
   bool flag_deleted_ = false;

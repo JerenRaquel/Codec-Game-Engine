@@ -1,6 +1,19 @@
 #include "../lib/GameObject.hpp"
 
 //
+// Tags Overloading Functions
+//
+std::istream& operator>>(std::istream& in, Tags& tag) {
+  std::string tag_temp;
+  in >> tag_temp;
+  if (!in) {
+    throw std::runtime_error("Could not parse tag...");
+  }
+  tag.name = tag_temp;
+  return in;
+}
+
+//
 // Structors
 //
 GameObject::GameObject() {

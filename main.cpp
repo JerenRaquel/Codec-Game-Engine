@@ -5,8 +5,8 @@
  */
 #include "Engine/Engine.hpp"
 
+void Engine::Awake() { LoadTagObjectBatch("Sprite.txt"); }
 void Engine::Start() {}
-void Engine::Awake() {}
 void Engine::Update() {}
 
 int main(int argc, char **argv) { Engine engine; }
