@@ -36,11 +36,11 @@ void Engine::LoadNewObject(const std::string& tag,
                            const Transform& transform) {
   if (this->tag_objects_.count(tag)) {
     this->tag_objects_[tag]->AddObject(
-        new GameObject(file_location, transform));
+        new TagObjects(file_location, transform));
   } else {
     this->tag_objects_.insert({tag, new TaggedVector});
     this->tag_objects_[tag]->AddObject(
-        new GameObject(file_location, transform));
+        new TagObjects(file_location, transform));
   }
 }
 
@@ -49,11 +49,11 @@ void Engine::LoadNewObject(const std::string& tag,
                            const Transform& transform, const sf::IntRect& uv) {
   if (this->tag_objects_.count(tag)) {
     this->tag_objects_[tag]->AddObject(
-        new GameObject(file_location, transform, uv));
+        new TagObjects(file_location, transform, uv));
   } else {
     this->tag_objects_.insert({tag, new TaggedVector});
     this->tag_objects_[tag]->AddObject(
-        new GameObject(file_location, transform, uv));
+        new TagObjects(file_location, transform, uv));
   }
 }
 
@@ -116,7 +116,7 @@ void Engine::TranslateTags(const std::string& tag,
     // Set the render flag
     tagged_vector->SetRenderFlag(true);
     // Get all the objects with the tag
-    std::vector<GameObject*>* objects = tagged_vector->GetObjects();
+    std::vector<TagObjects*>* objects = tagged_vector->GetObjects();
     // Loop through each tagged object
     for (unsigned int i = 0; i < objects->size(); i++) {
       // Check if the object exist
@@ -125,7 +125,7 @@ void Engine::TranslateTags(const std::string& tag,
       }
 
       // Create a temp object to point to the tagged object
-      TagObjects* temp = (*objects)[i]->GetObject();
+      TagObjects* temp = (*objects)[i];
       // Set the new position
       temp->SetPosition(temp->GetTransform()->position + translate_distance);
     }
@@ -146,7 +146,7 @@ void Engine::TranslateTags(const std::string& tag,
     // Set the render flag
     tagged_vector->SetRenderFlag(true);
     // Get all the objects with the tag
-    std::vector<GameObject*>* objects = tagged_vector->GetObjects();
+    std::vector<TagObjects*>* objects = tagged_vector->GetObjects();
     // Cache a translation distance var
     sf::Vector2f translation_distance;
     // Loop through each tagged object
@@ -157,7 +157,7 @@ void Engine::TranslateTags(const std::string& tag,
       }
 
       // Create a temp object to point to the tagged object
-      TagObjects* temp = (*objects)[i]->GetObject();
+      TagObjects* temp = (*objects)[i];
       // Get the translation distance
       translation_distance = translation_function(temp, this->window_size_);
       // Set the new position
@@ -226,11 +226,11 @@ void Engine::Render() {
     // Check if that group of objects needs to be rendered
     if (tag->second->CheckForRender()) {
       // Copy the vector pointer
-      std::vector<GameObject*>* tagged_vector = tag->second->GetObjects();
+      std::vector<TagObjects*>* tagged_vector = tag->second->GetObjects();
       // Loop through the vector of pointers
       for (unsigned int i = 0; i < tagged_vector->size(); i++) {
         // Draw
-        this->window_->draw(*((*tagged_vector)[i]->GetObject()->GetSprite()));
+        this->window_->draw(*((*tagged_vector)[i]->GetSprite()));
       }
     } else {
       continue;

@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "lib/ErrorHandler.hpp"
-#include "lib/GameObject.hpp"
 #include "lib/GarbageCollector.hpp"
 #include "lib/TaggedVector.hpp"
 

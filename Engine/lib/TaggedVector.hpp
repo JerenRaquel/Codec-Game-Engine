@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "GameObject.hpp"
+#include "TagObjects.hpp"
 
 class TaggedVector {
  public:
@@ -18,15 +18,15 @@ class TaggedVector {
   // Public Functions
   //
   // * Getters
-  std::vector<GameObject*>* GetObjects() const noexcept;
+  std::vector<TagObjects*>* GetObjects() const noexcept;
   const bool CheckForRender() const noexcept;
   // * Setters
-  void AddObject(GameObject* new_object) noexcept;
+  void AddObject(TagObjects* new_object) noexcept;
   void SetRenderFlag(bool state) noexcept;
 
  private:
   bool flag_render;
-  std::vector<GameObject*>* game_objects_;
+  std::vector<TagObjects*>* game_objects_;
 };
 
 #endif  // TAGGEDVECTOR_HPP_

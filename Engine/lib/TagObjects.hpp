@@ -35,6 +35,7 @@ class TagObjects {
   const sf::Sprite* GetSprite() const noexcept;
   const sf::Texture* GetTexture() const noexcept;
   const Transform* GetTransform() const noexcept;
+  const bool CheckIfDead() const noexcept;
   // * Setters
   void SetTransform(const Transform& transform) noexcept;
   void SetPosition(const sf::Vector2f& new_position) noexcept;
@@ -51,6 +52,7 @@ class TagObjects {
   std::unique_ptr<sf::Texture> texture_;
   std::unique_ptr<Transform> transform_;
   // * Flags
+  bool flag_deleted_ = false;
 
   //
   // Private Functions

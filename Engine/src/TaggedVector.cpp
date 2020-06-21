@@ -5,7 +5,7 @@
 //
 TaggedVector::TaggedVector() noexcept {
   this->flag_render = true;
-  this->game_objects_ = new std::vector<GameObject*>;
+  this->game_objects_ = new std::vector<TagObjects*>;
 }
 
 TaggedVector::~TaggedVector() noexcept {
@@ -19,7 +19,7 @@ TaggedVector::~TaggedVector() noexcept {
 // Public Functions
 //
 // * Getters
-std::vector<GameObject*>* TaggedVector::GetObjects() const noexcept {
+std::vector<TagObjects*>* TaggedVector::GetObjects() const noexcept {
   return this->game_objects_;
 }
 
@@ -28,7 +28,7 @@ const bool TaggedVector::CheckForRender() const noexcept {
 }
 
 // * Setters
-void TaggedVector::AddObject(GameObject* new_object) noexcept {
+void TaggedVector::AddObject(TagObjects* new_object) noexcept {
   this->game_objects_->push_back(new_object);
 }
 

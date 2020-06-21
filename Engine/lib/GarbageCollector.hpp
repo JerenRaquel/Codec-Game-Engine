@@ -20,7 +20,7 @@ class GarbageCollector {
   // Public Functions
   //
   void Clean(){};
-  void AddGarbage(GameObject* object){};
+  void AddGarbage(TagObjects* object){};
 
  private:
   /*Member vars*/;

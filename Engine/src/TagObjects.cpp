@@ -109,6 +109,10 @@ const Transform* TagObjects::GetTransform() const noexcept {
   return this->transform_.get();
 }
 
+const bool TagObjects::CheckIfDead() const noexcept {
+  return this->flag_deleted_;
+}
+
 // * Setters
 void TagObjects::SetTransform(const Transform& transform) noexcept {
   // Set the global data
