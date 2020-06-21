@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -14,6 +15,10 @@
 #include "lib/ErrorHandler.hpp"
 #include "lib/GameObject.hpp"
 #include "lib/GarbageCollector.hpp"
+#include "lib/TaggedVector.hpp"
+
+using TranslateFunc =
+    std::function<sf::Vector2f(const TagObjects*, const sf::Vector2i&)>;
 
 struct CollisionArguements {};
 
@@ -35,9 +40,8 @@ class Engine {
    */
   Engine(const unsigned int width, const unsigned int height,
          const std::string& game_title);
-  /* ~Engine | O(N*M) where N is the amount of tags and M is the amount of
-   objects corrisponding to a tag
-   * Cleans up all data.
+  /* ~Engine | O(1)
+   * Cleans up all data. <Currnently empty>
    */
   ~Engine();
 
@@ -60,7 +64,7 @@ class Engine {
    scale of the sprite
    *  Loads a new tagged object
    */
-  void LoadNewObject(const Tags& tag, const std::string& file_location,
+  void LoadNewObject(const std::string& tag, const std::string& file_location,
                      const Transform& transform);
   /* LoadNewObject | O(1)
    * @param tag: Tag of the object; holds the tag name and if it requires
@@ -73,7 +77,7 @@ class Engine {
    the box
    *  Loads a new tagged object
    */
-  void LoadNewObject(const Tags& tag, const std::string& file_location,
+  void LoadNewObject(const std::string& tag, const std::string& file_location,
                      const Transform& transform, const sf::IntRect& uv);
   /* LoadTagObjectBatch | O(N) where N is the amount of lines/objects to be read
    * @param file_location: the location or name of the sprites to be rendered
@@ -84,11 +88,13 @@ class Engine {
   //
   // Manipulation Functions
   //
-  // void TranslateTags(const std::string& tag,
-  //                    const sf::Vector2f& translate_distance,
-  //                    const CollisionArguements& collision_arguements);
-  // sf::Vector2f VLerp(const sf::Vector2f start_position,
-  //                    const sf::Vector2f end_position, const float distance)
+  void TranslateTags(const std::string& tag,
+                     const sf::Vector2f& translate_distance);
+  void TranslateTags(const std::string& tag,
+                     TranslateFunc translation_function);
+
+  template <typename T>
+  T Lerp(const T& start_position, const T& end_position, const float& t);
 
   //
   // Helper Functions
@@ -107,7 +113,7 @@ class Engine {
   std::unique_ptr<sf::RenderWindow> window_;
   std::string game_title_;
   sf::Vector2i window_size_;
-  std::map<Tags, std::vector<GameObject*>*, TagComp> tag_objects_;
+  std::map<std::string, TaggedVector*> tag_objects_;
   // * Internal Objects
   std::unique_ptr<GarbageCollector> garbage_collector_;
   std::unique_ptr<ErrorHandler> error_handler_;

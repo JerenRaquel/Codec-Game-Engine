@@ -37,6 +37,10 @@ class TagObjects {
   const Transform* GetTransform() const noexcept;
   // * Setters
   void SetTransform(const Transform& transform) noexcept;
+  void SetPosition(const sf::Vector2f& new_position) noexcept;
+  void SetRotation(const float& new_rotation) noexcept;
+  void SetScale(const sf::Vector2f& new_scale) noexcept;
+  // * Opertators
 
  private:
   //

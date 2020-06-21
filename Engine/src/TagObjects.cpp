@@ -123,6 +123,21 @@ void TagObjects::SetTransform(const Transform& transform) noexcept {
   this->sprite_->setScale(this->transform_->scale);
 }
 
+void TagObjects::SetPosition(const sf::Vector2f& new_position) noexcept {
+  this->transform_->position = new_position;
+  this->sprite_->setPosition(new_position);
+}
+
+void TagObjects::SetRotation(const float& new_rotation) noexcept {
+  this->transform_->rotation = new_rotation;
+  this->sprite_->setRotation(new_rotation);
+}
+
+void TagObjects::SetScale(const sf::Vector2f& new_scale) noexcept {
+  this->transform_->scale;
+  this->sprite_->setScale(new_scale);
+}
+
 //
 // Private Functions
 //

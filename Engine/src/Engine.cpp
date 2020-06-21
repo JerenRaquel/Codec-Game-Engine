@@ -26,40 +26,33 @@ Engine::Engine(const unsigned int width, const unsigned int height,
   Run();
 }
 
-Engine::~Engine() {
-  for (auto map_it = this->tag_objects_.begin();
-       map_it != this->tag_objects_.end(); map_it++) {
-    for (auto vect_it = map_it->second->begin();
-         vect_it != map_it->second->end(); vect_it++) {
-      delete *vect_it;
-    }
-    delete map_it->second;
-  }
-}
+Engine::~Engine() {}
 
 //
 // Loading Functions
 //
-void Engine::LoadNewObject(const Tags& tag, const std::string& file_location,
+void Engine::LoadNewObject(const std::string& tag,
+                           const std::string& file_location,
                            const Transform& transform) {
   if (this->tag_objects_.count(tag)) {
-    this->tag_objects_[tag]->push_back(
+    this->tag_objects_[tag]->AddObject(
         new GameObject(file_location, transform));
   } else {
-    this->tag_objects_.insert({tag, new std::vector<GameObject*>});
-    this->tag_objects_[tag]->push_back(
+    this->tag_objects_.insert({tag, new TaggedVector});
+    this->tag_objects_[tag]->AddObject(
         new GameObject(file_location, transform));
   }
 }
 
-void Engine::LoadNewObject(const Tags& tag, const std::string& file_location,
+void Engine::LoadNewObject(const std::string& tag,
+                           const std::string& file_location,
                            const Transform& transform, const sf::IntRect& uv) {
   if (this->tag_objects_.count(tag)) {
-    this->tag_objects_[tag]->push_back(
+    this->tag_objects_[tag]->AddObject(
         new GameObject(file_location, transform, uv));
   } else {
-    this->tag_objects_.insert({tag, new std::vector<GameObject*>});
-    this->tag_objects_[tag]->push_back(
+    this->tag_objects_.insert({tag, new TaggedVector});
+    this->tag_objects_[tag]->AddObject(
         new GameObject(file_location, transform, uv));
   }
 }
@@ -75,7 +68,7 @@ void Engine::LoadTagObjectBatch(const std::string& file_location) {
   std::stringstream parser;
   unsigned int sprites_read = 1;
   // File content
-  Tags tag;
+  std::string tag;
   std::string sprite_location;
   Transform transform;
   bool flag_use_UVs;
@@ -112,6 +105,75 @@ void Engine::LoadTagObjectBatch(const std::string& file_location) {
 //
 // Manipulation Functions
 //
+void Engine::TranslateTags(const std::string& tag,
+                           const sf::Vector2f& translate_distance) {
+  // Flag the renderer to draw new frames
+  this->flag_render_update = true;
+  // Check if the tag exist
+  if (this->tag_objects_.count(tag)) {
+    // Pointer to the object holding the GameObjects
+    TaggedVector* tagged_vector = this->tag_objects_[tag];
+    // Set the render flag
+    tagged_vector->SetRenderFlag(true);
+    // Get all the objects with the tag
+    std::vector<GameObject*>* objects = tagged_vector->GetObjects();
+    // Loop through each tagged object
+    for (unsigned int i = 0; i < objects->size(); i++) {
+      // Check if the object exist
+      if ((*objects)[i]->CheckIfDead()) {
+        continue;
+      }
+
+      // Create a temp object to point to the tagged object
+      TagObjects* temp = (*objects)[i]->GetObject();
+      // Set the new position
+      temp->SetPosition(temp->GetTransform()->position + translate_distance);
+    }
+  } else {
+    // Tagged objects don't exist
+    this->error_handler_->ThrowWarning(
+        "Tag: " + tag + " does not exist.\nSkipping translation step...");
+  }
+}
+void Engine::TranslateTags(const std::string& tag,
+                           TranslateFunc translation_function) {
+  // Flag the renderer to draw new frames
+  this->flag_render_update = true;
+  // Check if the tag exist
+  if (this->tag_objects_.count(tag)) {
+    // Pointer to the object holding the GameObjects
+    TaggedVector* tagged_vector = this->tag_objects_[tag];
+    // Set the render flag
+    tagged_vector->SetRenderFlag(true);
+    // Get all the objects with the tag
+    std::vector<GameObject*>* objects = tagged_vector->GetObjects();
+    // Cache a translation distance var
+    sf::Vector2f translation_distance;
+    // Loop through each tagged object
+    for (unsigned int i = 0; i < objects->size(); i++) {
+      // Check if the object exist
+      if ((*objects)[i]->CheckIfDead()) {
+        continue;
+      }
+
+      // Create a temp object to point to the tagged object
+      TagObjects* temp = (*objects)[i]->GetObject();
+      // Get the translation distance
+      translation_distance = translation_function(temp, this->window_size_);
+      // Set the new position
+      temp->SetPosition(temp->GetTransform()->position + translation_distance);
+    }
+  } else {
+    // Tagged objects don't exist
+    this->error_handler_->ThrowWarning(
+        "Tag: " + tag + " does not exist.\nSkipping translation step...");
+  }
+}
+
+template <typename T>
+T Engine::Lerp(const T& start_position, const T& end_position, const float& t) {
+  return (1 - t) * start_position + t * end_position;
+}
 
 //
 // Helper Functions
@@ -124,6 +186,7 @@ const ErrorHandler& Engine::ErrorHandle() const noexcept {
 // Private Functions
 //
 void Engine::Run() {
+  sf::Clock clock;
   try {
     Awake();
     Start();
@@ -157,16 +220,20 @@ void Engine::Run() {
 
 void Engine::Render() {
   this->window_->clear();
-  for (auto object = this->tag_objects_.begin();
-       object != this->tag_objects_.end(); object++) {
-    if (object->first.flag_render) {
-      std::vector<GameObject*>* tagged_objects = object->second;
-      for (unsigned int i = 0; i < tagged_objects->size(); i++) {
-        if (!(*tagged_objects)[i]->CheckIfDead()) {
-          this->window_->draw(
-              *((*tagged_objects)[i]->GetObject()->GetSprite()));
-        }
+  // Loop through each tag
+  for (auto tag = this->tag_objects_.begin(); tag != this->tag_objects_.end();
+       tag++) {
+    // Check if that group of objects needs to be rendered
+    if (tag->second->CheckForRender()) {
+      // Copy the vector pointer
+      std::vector<GameObject*>* tagged_vector = tag->second->GetObjects();
+      // Loop through the vector of pointers
+      for (unsigned int i = 0; i < tagged_vector->size(); i++) {
+        // Draw
+        this->window_->draw(*((*tagged_vector)[i]->GetObject()->GetSprite()));
       }
+    } else {
+      continue;
     }
   }
 }

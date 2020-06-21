@@ -1,19 +1,6 @@
 #include "../lib/GameObject.hpp"
 
 //
-// Tags Overloading Functions
-//
-std::istream& operator>>(std::istream& in, Tags& tag) {
-  std::string tag_temp;
-  in >> tag_temp;
-  if (!in) {
-    throw std::runtime_error("Could not parse tag...");
-  }
-  tag.name = tag_temp;
-  return in;
-}
-
-//
 // Structors
 //
 GameObject::GameObject() {
@@ -46,7 +33,7 @@ GameObject::GameObject(const std::string& file_location,
 // Public Functions
 //
 // * Getters
-const TagObjects* GameObject::GetObject() const noexcept {
+TagObjects* GameObject::GetObject() const noexcept {
   if (this->flag_deleted_) {
     return nullptr;
   }

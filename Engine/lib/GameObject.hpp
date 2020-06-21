@@ -7,18 +7,6 @@
 
 #include "TagObjects.hpp"
 
-struct Tags {
-  std::string name;
-  bool flag_render = true;
-  friend std::istream& operator>>(std::istream& in, Tags& tag);
-};
-
-struct TagComp {
-  bool operator()(const Tags& a, const Tags& b) const {
-    return a.name < b.name;
-  }
-};
-
 class GameObject {
  public:
   //
@@ -36,7 +24,7 @@ class GameObject {
   // Public Functions
   //
   // * Getters
-  const TagObjects* GetObject() const noexcept;
+  TagObjects* GetObject() const noexcept;
   const bool CheckIfDead() const noexcept;
 
  private:
